@@ -8,6 +8,7 @@ public class Player : MonoBehaviour, IEntity
     public int _MoveSpeed { get; set; }
     public List<IAttack> _Attacks { get; set; }
     public Position _Position { get; set; }
+    public float moveSpeed = 5f;
     void Start()
     {
         _HP = 10;
@@ -20,6 +21,9 @@ public class Player : MonoBehaviour, IEntity
     // Update is called once per frame
     void Update()
     {
-        
+        float moveX = Input.GetAxis("Horizontal");
+        float moveZ = Input.GetAxis("Vertical");
+        Vector3 moveDirection = new Vector3(moveX, 0, moveZ).normalized;
+        transform.Translate(moveDirection * moveSpeed * Time.deltaTime, Space.World);
     }
 }
