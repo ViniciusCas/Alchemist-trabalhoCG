@@ -1,3 +1,4 @@
+using NSubstitute.Extensions;
 using System.Collections;
 using System.Collections.Generic;
 using System.Data;
@@ -6,6 +7,7 @@ using UnityEngine.Tilemaps;
 
 namespace GridHandler 
 {
+    [ExecuteInEditMode]
     public class TileTo3D : MonoBehaviour
     {
         public GameObject[] tilePrefabs;
@@ -16,14 +18,13 @@ namespace GridHandler
 
         void Start()
         {
-            tilemap = GetComponent<Tilemap>();
             tileInfo = new TileInfo(tilemap);
-            
-            MapTiles();
         }
 
-        private void MapTiles()
+        public void MapTiles(Tilemap tilemap)
         {
+            this.tilemap = tilemap;
+
             foreach (var prefab in tilePrefabs)
             {
                 if (prefab == null) continue;
@@ -37,6 +38,8 @@ namespace GridHandler
 
         public void Create3DTilemap(GameObject parent = null)
         {
+            Clear3DTilemap(parent);
+
             foreach (Vector3Int position in tilemap.cellBounds.allPositionsWithin)
             {
                 if (!tilemap.HasTile(position)) continue;
@@ -63,6 +66,15 @@ namespace GridHandler
                 }
             }
             tilemap.gameObject.SetActive(false);
+        }
+
+        public void Clear3DTilemap(GameObject parent)
+        {
+            foreach (Transform child in parent.transform)
+            {
+                Debug.Log(child.name);
+                Destroy(child.gameObject);
+            }
         }
     }
 }

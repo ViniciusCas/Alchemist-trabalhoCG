@@ -24,11 +24,8 @@ public class WFCHandler : MonoBehaviour
 
     public GameObject grid3D;
     private TileTo3D tileTo3D;
-
-    // Start is called before the first frame update
     void Start()
     {
-
         CreateWFC();
         CreateTilemap();
         SaveTilemap();
@@ -42,7 +39,10 @@ public class WFCHandler : MonoBehaviour
     }
     public void CreateTilemap()
     {
+        tileTo3D = outputImage.gameObject.GetComponent<TileTo3D>();
+        
         wfc.CreateNewTileMap();
+        tileTo3D.MapTiles(outputImage);
         tileTo3D.Create3DTilemap(grid3D);
     }
 
