@@ -4,7 +4,6 @@ using UnityEngine.Tilemaps;
 
 namespace GridHandler
 {
-
     public class TileInfo
     {
         private Tilemap _tilemap;

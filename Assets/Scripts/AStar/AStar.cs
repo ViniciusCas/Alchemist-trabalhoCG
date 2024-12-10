@@ -2,17 +2,9 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class AStar : MonoBehaviour
+public class AStar 
 {
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
+    public GameObject grid;
 
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
+
 }

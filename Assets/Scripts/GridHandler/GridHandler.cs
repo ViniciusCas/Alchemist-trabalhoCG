@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace GridHandler
 {
-    public class Grid : MonoBehaviour
+    public class GridHandler : MonoBehaviour
     {
         void Start()
         {
