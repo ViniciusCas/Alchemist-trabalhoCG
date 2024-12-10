@@ -13,7 +13,7 @@ public struct Position
 }
 public interface IEntity {
     int _HP {get; set; }
-    int _MoveSpeed {get; set; }
+    float _MoveSpeed {get; set; }
     List<IAttack> _Attacks { get; set; }
     Position _Position {get; set; }
 }

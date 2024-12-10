@@ -5,7 +5,7 @@ using UnityEngine;
 public class Goblin : MonoBehaviour, IEntity
 {
     public int _HP { get; set; }
-    public int _MoveSpeed { get; set; }
+    public float _MoveSpeed { get; set; }
     public List<IAttack> _Attacks { get; set; }
     public Position _Position { get; set; }
     void Start()

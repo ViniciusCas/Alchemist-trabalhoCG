@@ -28,7 +28,6 @@ public class WFCHandler : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        tileTo3D = outputImage.gameObject.GetComponent<TileTo3D>();
 
         CreateWFC();
         CreateTilemap();
@@ -38,6 +37,7 @@ public class WFCHandler : MonoBehaviour
 
     public void CreateWFC()
     {
+        tileTo3D = outputImage.gameObject.GetComponent<TileTo3D>();
         wfc = new WaveFunctionCollapse(this.inputImage, this.outputImage, patternSize, this.outputWidth, this.outputHeight, this.maxIterations, this.equalWeights);
     }
     public void CreateTilemap()
