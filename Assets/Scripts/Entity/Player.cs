@@ -7,27 +7,82 @@ public class Player : MonoBehaviour, IEntity
     public float rotationSpeed = 90f; // Degrees per second
 
     private Quaternion targetRotation;
+    public GameObject FireSpell;
+    private Animator animator;
+    private int usingSpell=0;
+    float moveX, moveZ;
+    public float spellCooldown, lastUse = 0;
     public int _HP { get; set; }
     public float _MoveSpeed { get; set; }
     public List<IAttack> _Attacks { get; set; }
-    public Position _Position { get; set; }
-
+    void AnimationCheck()
+    {
+        if (Input.GetMouseButton(0))
+        {
+            animator?.SetTrigger("shoot");
+        }
+        else if (moveX != 0 || moveZ != 0)
+        {
+            animator?.SetTrigger("walk"); // Trigger the "walk" animation
+        }
+        else
+        {
+            animator?.SetTrigger("stop");
+        }
+    }
+    void PlayerMovement()
+    {
+        moveX = Input.GetAxis("Horizontal");
+        moveZ = Input.GetAxis("Vertical");
+        Vector3 moveDirection = new Vector3(moveX, 0, moveZ).normalized;
+        transform.Translate(moveDirection * _MoveSpeed * Time.deltaTime, Space.World);
+    }
     void Start()
     {
         _HP = 10;
         _MoveSpeed = 5f;
-        _Attacks = new List<IAttack> { new FireSpell(1), new ShockSpell(1), new WaterSpell(1)};
-        _Position = new Position(0, 0);
-        this.transform.Translate(3, 2, 0);
+        spellCooldown = 1f;
+        _Attacks = new List<IAttack> {};
+        animator = GetComponent<Animator>(); // Get the Animator component
+        if (animator == null)
+        {
+            Debug.LogError("Animator component not found on the Player object.");
+        }
     }
+    void SpellHandler()
+    {
+        if(Input.GetKeyDown(KeyCode.Alpha1)) usingSpell=0;
+        else if(Input.GetKeyDown(KeyCode.Alpha2)) usingSpell=1;
+        else if(Input.GetKeyDown(KeyCode.Alpha3)) usingSpell=2;
+    } 
+    void SpellCast()
+    {
+        if (Input.GetMouseButton(0) && lastUse + spellCooldown < Time.time)
+        {
+            lastUse = Time.time;
+            if(usingSpell==0)
+            {
+                Vector3 spawnPosition = transform.position + transform.forward;
+                GameObject firespell = Instantiate(FireSpell, spawnPosition, transform.rotation, transform);
+                firespell.transform.SetParent(null);
+            }
+            else if(usingSpell==1)
+            {
 
+            }
+            else if(usingSpell==2)
+            {
+
+            }
+        }
+    }
     void Update()
     {
-        float moveX = Input.GetAxis("Horizontal");
-        float moveZ = Input.GetAxis("Vertical");
-        Vector3 moveDirection = new Vector3(moveX, 0, moveZ).normalized;
-        Vector3 worldMoveDirection = transform.TransformDirection(moveDirection);
-        transform.Translate(worldMoveDirection * _MoveSpeed * Time.deltaTime, Space.World);
+
+        PlayerMovement();
+        AnimationCheck();
+        SpellHandler();
+        SpellCast();
 
         if (Input.GetMouseButton(1)) // Update target point while Mouse2 is held down
         {
@@ -39,11 +94,6 @@ public class Player : MonoBehaviour, IEntity
                 directionToTarget.y = 0; // Only change the Y coordinate
                 targetRotation = Quaternion.LookRotation(directionToTarget);
             }
-        }
-
-        // Smoothly rotate towards the target rotation if it exists
-        if (Input.GetMouseButton(1))
-        {
             transform.rotation = Quaternion.RotateTowards(
                 transform.rotation,
                 targetRotation,

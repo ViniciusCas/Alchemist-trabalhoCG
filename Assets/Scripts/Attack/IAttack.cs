@@ -1,6 +1,6 @@
 public interface IAttack 
 {
-    int _damage {get; set; }
-    int _range {get; set; }
-    Position _AOE {get; set; }
+    int damage {get; set; }
+    float speed {get; set; }
+    float lifespan {get; set; }
 }

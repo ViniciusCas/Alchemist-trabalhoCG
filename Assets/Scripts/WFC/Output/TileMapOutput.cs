@@ -22,7 +22,7 @@ namespace WaveFunctionCollaps
         {
             if (outputValues.Length == 0)
             {
-                Debug.Log("No output");
+                //Debug.Log("No output");
                 return;
             }
             this.outputImage.ClearAllTiles();

@@ -15,5 +15,4 @@ public interface IEntity {
     int _HP {get; set; }
     float _MoveSpeed {get; set; }
     List<IAttack> _Attacks { get; set; }
-    Position _Position {get; set; }
 }

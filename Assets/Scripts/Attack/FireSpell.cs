@@ -2,32 +2,32 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class FireSpell : IAttack
+public class Firespell : MonoBehaviour, IAttack
 {
-    // Start is called before the first frame update
-    public int _damage { get; set; }
-    public int _range { get; set; }
-    public Position _AOE { get; set; }
-    public FireSpell(int rank)
+    public int damage { get; set; }
+    public float speed { get; set; }
+    public float lifespan { get; set; }
+
+    void Start()
     {
-        if(rank==1)
+        damage = 2;
+        speed = 5.5f;
+        lifespan = 3f; // Lifespan in seconds
+    }
+
+    void Update()
+    {
+        // Reduce lifespan over time
+        if (lifespan > 0)
         {
-            _damage = 4;
-            _range = 4;
-            _AOE = new Position(1, 1);
+            lifespan -= Time.deltaTime; // Use Time.deltaTime for accurate timing
         }
-        else if(rank==2)
+        else
         {
-            _damage = 5;
-            _range = 5;
-            _AOE = new Position(1, 1);
-        }   
-        else if(rank==3)
-        {
-            _damage = 6;
-            _range = 6;
-            _AOE = new Position(1, 3);
+            Destroy(gameObject); // Destroy the Firespell after lifespan ends
         }
-        else Debug.Log("Erro ao alocar FireSpell");
+
+        // Move the Firespell forward in its local space
+        transform.Translate(transform.forward * speed * Time.deltaTime, Space.World);
     }
 }
