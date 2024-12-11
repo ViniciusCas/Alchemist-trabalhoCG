@@ -1,10 +1,11 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class Player : MonoBehaviour, IEntity
 {
-    public float rotationSpeed = 120f; // Degrees per second
+    public float rotationSpeed = 180f; // Degrees per second
 
     private Quaternion targetRotation;
     public GameObject fireSpellPrefab;
@@ -13,12 +14,11 @@ public class Player : MonoBehaviour, IEntity
     public GameObject F;
     public GameObject NH4NO3;
     private Animator animator;
-    private int usingSpell=0;
+    public static int usingSpell=0;
     float moveX, moveZ;
     public float spellCooldown, lastUse = 0;
     public int _HP { get; set; }
     public float _MoveSpeed { get; set; }
-    public List<IAttack> _Attacks { get; set; }
     void AnimationCheck()
     {
         if (moveX != 0 || moveZ != 0)
@@ -36,10 +36,17 @@ public class Player : MonoBehaviour, IEntity
         moveZ = Input.GetAxis("Vertical");
         Vector3 moveDirection = new Vector3(moveX, 0, moveZ).normalized;
         transform.Translate(moveDirection * _MoveSpeed * Time.deltaTime, Space.World);
+        if (Input.GetKey(KeyCode.Q)) transform.Rotate(Vector3.up * -rotationSpeed * Time.deltaTime);
+        if (Input.GetKey(KeyCode.E)) transform.Rotate(Vector3.up * rotationSpeed * Time.deltaTime);
+        if (Input.GetKey(KeyCode.R))
+        {
+            transform.rotation = Quaternion.Euler(0, 0, 0);
+        }
+
     }
     void Start()
     {
-        _HP = 10;
+        _HP = 3;
         _MoveSpeed = 5f;
         spellCooldown = 1f;
         animator = GetComponent<Animator>(); // Get the Animator component
@@ -104,9 +111,8 @@ public class Player : MonoBehaviour, IEntity
         SpellHandler();
         SpellCast();
 
-        if (Input.GetMouseButton(1)) // Update target point while Mouse2 is held down
+        /*if (Input.GetMouseButton(1)) 
         {
-            // Perform a raycast to determine the target rotation
             Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
             if (Physics.Raycast(ray, out RaycastHit hitInfo))
             {
@@ -121,7 +127,7 @@ public class Player : MonoBehaviour, IEntity
                 targetRotation,
                 rotationSpeed * Time.deltaTime
             );
-        }
+        }*/
     }
     void OnCollisionEnter(Collision collision)
     {
@@ -138,5 +144,6 @@ public class Player : MonoBehaviour, IEntity
     void Die()
     {
         Debug.Log("Game Over");
+        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex + 1);
     }
 }

@@ -12,8 +12,8 @@ public class SkeletonMinion : MonoBehaviour, IEntity
     public float raycastMaxDistance = 10f;
     void Start()
     {
-        _HP = 4;
-        _MoveSpeed = 2.5f; // Adjust the speed as needed
+        _HP = 6;
+        _MoveSpeed = 4f; // Adjust the speed as needed
         
         GameObject player = GameObject.FindGameObjectWithTag("Player");
         // Find the Player in the scene by tag
@@ -36,6 +36,7 @@ public class SkeletonMinion : MonoBehaviour, IEntity
             Quaternion targetRotation = Quaternion.LookRotation(direction);
             transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, Time.deltaTime * 5f); // Smooth rotation
         }
+        if(transform.position.y<=-10) Destroy(this.gameObject);
     }
 
     private void OnTriggerEnter(Collider other)
@@ -45,25 +46,41 @@ public class SkeletonMinion : MonoBehaviour, IEntity
         //Debug.Log("Detection");
         if (other.gameObject.CompareTag("C2H4"))
         {
-            if(collidedObjectName=="Grass(Clone)") _HP-=4;
+            if(collidedObjectName=="Grass(Clone)") 
+            {
+                _HP-=6;
+                PointsClass.playerScore += 10;
+            }
             else _HP -=2;
             Debug.Log("C2H4");
         }
         else if (other.gameObject.CompareTag("Na"))
         {
-            if(collidedObjectName=="Water(Clone)") _HP-=4;
+            if(collidedObjectName=="Water(Clone)")
+            {
+                _HP-=6;
+                PointsClass.playerScore += 10;
+            }
             else _HP -=2;
             Debug.Log("Na");
         }
         else if (other.gameObject.CompareTag("F"))
         {
-            if(collidedObjectName=="Sand(Clone)") _HP-=4;
+            if(collidedObjectName=="Sand(Clone)") 
+            {
+                _HP-=6;
+                PointsClass.playerScore += 10;
+            }
             else _HP -=2;
             Debug.Log("F");
         }
         else if (other.gameObject.CompareTag("NH4NO3"))
         {
-            if(collidedObjectName=="Fire(Clone)") _HP-=4;
+            if(collidedObjectName=="Fire(Clone)")
+            {
+                _HP-=6;
+                PointsClass.playerScore += 10;
+            }
             else _HP -=2;
             Debug.Log("NH4NO3");
         }
@@ -90,7 +107,7 @@ public class SkeletonMinion : MonoBehaviour, IEntity
     private void Die()
     {
         Debug.Log("SkeletonMinion has died!");
-
+        PointsClass.playerScore += 10;
         Destroy(gameObject); // Destroy the skeleton GameObject
     }
 }

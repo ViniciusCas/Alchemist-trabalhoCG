@@ -20,7 +20,7 @@ public class FollowPlayer : MonoBehaviour
         if (mageObject != null)
         {
             // Get the Mage's current X and Z positions
-            targetPosition = new Vector3(mageObject.transform.position.x, mageObject.transform.position.y+4f, mageObject.transform.position.z-4f);
+            targetPosition = new Vector3(mageObject.transform.position.x, mageObject.transform.position.y+5f, mageObject.transform.position.z-5f);
 
             // Update the current GameObject's position
             this.transform.position = targetPosition;

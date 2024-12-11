@@ -11,8 +11,8 @@ public class SpellScript : MonoBehaviour, IAttack
     void Start()
     {
         damage = 2;
-        speed = 5.5f;
-        lifespan = 3f; // Lifespan in seconds
+        speed = 7.5f;
+        lifespan = 2f; // Lifespan in seconds
     }
 
     void Update()
