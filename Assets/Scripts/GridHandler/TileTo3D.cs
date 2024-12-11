@@ -59,7 +59,7 @@ namespace GridHandler
                         tmpTile = GameObject.CreatePrimitive(PrimitiveType.Cube);
                     }
 
-                    Debug.Log(parent.name);
+                    //Debug.Log(parent.name);
 
                     GameObject instantiatedTile = (parent == null)
                         ? Instantiate(tmpTile)
@@ -88,7 +88,7 @@ namespace GridHandler
         {
             foreach (Transform child in parent.transform)
             {
-                Debug.Log(child.name);
+                //Debug.Log(child.name);
                 Destroy(child.gameObject);
             }
         }

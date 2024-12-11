@@ -14,5 +14,4 @@ public struct Position
 public interface IEntity {
     int _HP {get; set; }
     float _MoveSpeed {get; set; }
-    List<IAttack> _Attacks { get; set; }
 }

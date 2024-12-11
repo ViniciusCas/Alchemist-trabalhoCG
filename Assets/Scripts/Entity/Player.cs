@@ -4,10 +4,14 @@ using UnityEngine;
 
 public class Player : MonoBehaviour, IEntity
 {
-    public float rotationSpeed = 90f; // Degrees per second
+    public float rotationSpeed = 120f; // Degrees per second
 
     private Quaternion targetRotation;
-    public GameObject FireSpell;
+    public GameObject fireSpellPrefab;
+    public GameObject C2H4;
+    public GameObject Na;
+    public GameObject F;
+    public GameObject NH4NO3;
     private Animator animator;
     private int usingSpell=0;
     float moveX, moveZ;
@@ -17,11 +21,7 @@ public class Player : MonoBehaviour, IEntity
     public List<IAttack> _Attacks { get; set; }
     void AnimationCheck()
     {
-        if (Input.GetMouseButton(0))
-        {
-            animator?.SetTrigger("shoot");
-        }
-        else if (moveX != 0 || moveZ != 0)
+        if (moveX != 0 || moveZ != 0)
         {
             animator?.SetTrigger("walk"); // Trigger the "walk" animation
         }
@@ -42,37 +42,57 @@ public class Player : MonoBehaviour, IEntity
         _HP = 10;
         _MoveSpeed = 5f;
         spellCooldown = 1f;
-        _Attacks = new List<IAttack> {};
         animator = GetComponent<Animator>(); // Get the Animator component
         if (animator == null)
         {
             Debug.LogError("Animator component not found on the Player object.");
         }
+        fireSpellPrefab = GameObject.Find("fireSpellPrefab");
+        C2H4 = GameObject.Find("C2H4");
+        Na = GameObject.Find("Na");
+        F = GameObject.Find("F");
+        NH4NO3 = GameObject.Find("NH4NO3");
     }
     void SpellHandler()
     {
         if(Input.GetKeyDown(KeyCode.Alpha1)) usingSpell=0;
         else if(Input.GetKeyDown(KeyCode.Alpha2)) usingSpell=1;
         else if(Input.GetKeyDown(KeyCode.Alpha3)) usingSpell=2;
+        else if(Input.GetKeyDown(KeyCode.Alpha4)) usingSpell=3;
     } 
     void SpellCast()
     {
         if (Input.GetMouseButton(0) && lastUse + spellCooldown < Time.time)
         {
+            animator?.SetTrigger("shoot");
             lastUse = Time.time;
-            if(usingSpell==0)
+            if(usingSpell==0) //Etileno -> Grama
             {
                 Vector3 spawnPosition = transform.position + transform.forward;
-                GameObject firespell = Instantiate(FireSpell, spawnPosition, transform.rotation, transform);
-                firespell.transform.SetParent(null);
+                GameObject C2H4Reaction = Instantiate(C2H4, spawnPosition, transform.rotation, transform);
+                C2H4Reaction.AddComponent<SpellScript>();
+                C2H4Reaction.transform.SetParent(null);
             }
-            else if(usingSpell==1)
+            else if(usingSpell==1) //Sódio Metálico -> Água
             {
-
+                Vector3 spawnPosition = transform.position + transform.forward;
+                GameObject NaReaction = Instantiate(Na, spawnPosition, transform.rotation, transform);
+                NaReaction.AddComponent<SpellScript>();
+                NaReaction.transform.SetParent(null);
             }
-            else if(usingSpell==2)
+            else if(usingSpell==2) //Flúor ->Areia
             {
-
+                Vector3 spawnPosition = transform.position + transform.forward;
+                GameObject FReaction = Instantiate(F, spawnPosition, transform.rotation, transform);
+                FReaction.AddComponent<SpellScript>();
+                FReaction.transform.SetParent(null);
+            }
+            else if(usingSpell==3) //Nitrato de Amônio -> Fogo
+            {
+                Vector3 spawnPosition = transform.position + transform.forward;
+                GameObject NH4NO3Reaction = Instantiate(NH4NO3, spawnPosition, transform.rotation, transform);
+                NH4NO3Reaction.AddComponent<SpellScript>();
+                NH4NO3Reaction.transform.SetParent(null);
             }
         }
     }
@@ -92,7 +112,9 @@ public class Player : MonoBehaviour, IEntity
             {
                 Vector3 directionToTarget = hitInfo.point - transform.position;
                 directionToTarget.y = 0; // Only change the Y coordinate
+                Debug.Log(directionToTarget);
                 targetRotation = Quaternion.LookRotation(directionToTarget);
+                Debug.Log(targetRotation);
             }
             transform.rotation = Quaternion.RotateTowards(
                 transform.rotation,
@@ -100,5 +122,21 @@ public class Player : MonoBehaviour, IEntity
                 rotationSpeed * Time.deltaTime
             );
         }
+    }
+    void OnCollisionEnter(Collision collision)
+    {
+        Debug.Log(_HP);
+        if (collision.gameObject.CompareTag("Enemy"))
+        {
+           this._HP-=1;
+        }
+        if(this._HP<=0)
+        {
+            Die();
+        }
+    }
+    void Die()
+    {
+        Debug.Log("Game Over");
     }
 }
