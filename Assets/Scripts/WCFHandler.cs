@@ -28,7 +28,6 @@ public class WFCHandler : MonoBehaviour
     {
         CreateWFC();
         CreateTilemap();
-        SaveTilemap();
     }
 
     public void CreateWFC()
@@ -44,17 +43,4 @@ public class WFCHandler : MonoBehaviour
         tileTo3D.MapTiles(outputImage);
         tileTo3D.Create3DTilemap(grid3D);
     }
-
-    public void SaveTilemap()
-    {
-        var output = wfc.GetOutputTileMap();
-        if (output != null)
-        {
-            outputImage = output;
-            GameObject objectToSave = outputImage.gameObject;
-
-            PrefabUtility.SaveAsPrefabAsset(objectToSave, "Assets/Resources/output.prefab");
-        }
-    }
-
 }

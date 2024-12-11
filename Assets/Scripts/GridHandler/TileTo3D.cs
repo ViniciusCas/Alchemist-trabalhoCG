@@ -12,6 +12,8 @@ namespace GridHandler
     {
         public GameObject[] tilePrefabs;
         private Dictionary<string, GameObject> tilePrefabsMap = new Dictionary<string, GameObject>();
+        private Dictionary<string, string> tileTypeTextMap = new Dictionary<string, string>();
+
         private Tilemap tilemap;
         private TileInfo tileInfo;
 

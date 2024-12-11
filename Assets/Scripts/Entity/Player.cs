@@ -5,18 +5,27 @@ using UnityEngine.SceneManagement;
 
 public class Player : MonoBehaviour, IEntity
 {
-    public float rotationSpeed = 180f; // Degrees per second
+    public float rotationSpeed = 270f; // Degrees per second
 
     private Quaternion targetRotation;
-    public GameObject fireSpellPrefab;
-    public GameObject C2H4;
-    public GameObject Na;
-    public GameObject F;
-    public GameObject NH4NO3;
+    
+    private GameObject Na;
+    private GameObject NH3;
+    private GameObject Fe2O3;
+    private GameObject HCl;
+
+    public HealthBar healthBar;
+    public CooldownBar cooldownBar;
+
+    public AudioClip shootSoundClip;
+    private AudioSource audioSource;
+
     private Animator animator;
     public static int usingSpell=0;
     float moveX, moveZ;
     public float spellCooldown, lastUse = 0;
+
+    public int maxHealth = 100;
     public int _HP { get; set; }
     public float _MoveSpeed { get; set; }
     void AnimationCheck()
@@ -36,6 +45,7 @@ public class Player : MonoBehaviour, IEntity
         moveZ = Input.GetAxis("Vertical");
         Vector3 moveDirection = new Vector3(moveX, 0, moveZ).normalized;
         transform.Translate(moveDirection * _MoveSpeed * Time.deltaTime, Space.World);
+
         if (Input.GetKey(KeyCode.Q)) transform.Rotate(Vector3.up * -rotationSpeed * Time.deltaTime);
         if (Input.GetKey(KeyCode.E)) transform.Rotate(Vector3.up * rotationSpeed * Time.deltaTime);
         if (Input.GetKey(KeyCode.R))
@@ -46,19 +56,26 @@ public class Player : MonoBehaviour, IEntity
     }
     void Start()
     {
-        _HP = 3;
-        _MoveSpeed = 5f;
+        _HP = maxHealth;
+        healthBar.SetMaxHealth(this.maxHealth);
+
         spellCooldown = 1f;
-        animator = GetComponent<Animator>(); // Get the Animator component
+        cooldownBar.SetMaxCooldown(this.spellCooldown);
+
+        _MoveSpeed = 5f;
+
+        animator = GetComponent<Animator>(); 
         if (animator == null)
         {
             Debug.LogError("Animator component not found on the Player object.");
         }
-        fireSpellPrefab = GameObject.Find("fireSpellPrefab");
-        C2H4 = GameObject.Find("C2H4");
+
+        audioSource = GetComponent<AudioSource>();
+
         Na = GameObject.Find("Na");
-        F = GameObject.Find("F");
-        NH4NO3 = GameObject.Find("NH4NO3");
+        NH3 = GameObject.Find("NH3");
+        Fe2O3 = GameObject.Find("Fe2O3");
+        HCl = GameObject.Find("HCl");
     }
     void SpellHandler()
     {
@@ -73,34 +90,37 @@ public class Player : MonoBehaviour, IEntity
         {
             animator?.SetTrigger("shoot");
             lastUse = Time.time;
-            if(usingSpell==0) //Etileno -> Grama
+            if(usingSpell==0) //Na -> H2O
             {
                 Vector3 spawnPosition = transform.position + transform.forward;
-                GameObject C2H4Reaction = Instantiate(C2H4, spawnPosition, transform.rotation, transform);
+                GameObject C2H4Reaction = Instantiate(Na, spawnPosition, transform.rotation, transform);
                 C2H4Reaction.AddComponent<SpellScript>();
                 C2H4Reaction.transform.SetParent(null);
             }
-            else if(usingSpell==1) //Sódio Metálico -> Água
+            else if(usingSpell==1) // NH3 -> Cl
             {
                 Vector3 spawnPosition = transform.position + transform.forward;
-                GameObject NaReaction = Instantiate(Na, spawnPosition, transform.rotation, transform);
+                GameObject NaReaction = Instantiate(NH3, spawnPosition, transform.rotation, transform);
                 NaReaction.AddComponent<SpellScript>();
                 NaReaction.transform.SetParent(null);
             }
-            else if(usingSpell==2) //Flúor ->Areia
+            else if(usingSpell==2) //Fe2O3 -> Al
             {
                 Vector3 spawnPosition = transform.position + transform.forward;
-                GameObject FReaction = Instantiate(F, spawnPosition, transform.rotation, transform);
+                GameObject FReaction = Instantiate(Fe2O3, spawnPosition, transform.rotation, transform);
                 FReaction.AddComponent<SpellScript>();
                 FReaction.transform.SetParent(null);
             }
-            else if(usingSpell==3) //Nitrato de Amônio -> Fogo
+            else if(usingSpell==3) //HCl -> FeS
             {
                 Vector3 spawnPosition = transform.position + transform.forward;
-                GameObject NH4NO3Reaction = Instantiate(NH4NO3, spawnPosition, transform.rotation, transform);
+                GameObject NH4NO3Reaction = Instantiate(HCl, spawnPosition, transform.rotation, transform);
                 NH4NO3Reaction.AddComponent<SpellScript>();
                 NH4NO3Reaction.transform.SetParent(null);
             }
+
+            audioSource.clip = shootSoundClip;
+            audioSource.Play();
         }
     }
     void Update()
@@ -110,6 +130,7 @@ public class Player : MonoBehaviour, IEntity
         AnimationCheck();
         SpellHandler();
         SpellCast();
+        UpdateCooldown();
 
         /*if (Input.GetMouseButton(1)) 
         {
@@ -129,18 +150,36 @@ public class Player : MonoBehaviour, IEntity
             );
         }*/
     }
+
+    void UpdateCooldown()
+    {
+        if (lastUse + spellCooldown > Time.time)
+        {
+            cooldownBar.SetCooldown(Time.time - lastUse);
+        }
+    }
+
     void OnCollisionEnter(Collision collision)
     {
         Debug.Log(_HP);
         if (collision.gameObject.CompareTag("Enemy"))
         {
-           this._HP-=1;
+           TakeDamage();
         }
-        if(this._HP<=0)
+    }
+
+    void TakeDamage()
+    {
+        this._HP -= 20;
+        healthBar.SetHealth(this._HP);
+
+
+        if (this._HP <= 0)
         {
             Die();
         }
     }
+
     void Die()
     {
         Debug.Log("Game Over");

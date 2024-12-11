@@ -4,11 +4,11 @@
 TagManager:
   serializedVersion: 2
   tags:
-  - C2H4
-  - F
   - Na
-  - NH4NO3
   - Enemy
+  - NH3
+  - HCl
+  - Fe2O3
   layers:
   - Default
   - TransparentFX

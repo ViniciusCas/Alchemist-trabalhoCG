@@ -1,6 +1,5 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
+#if UNITY_EDITOR
 using UnityEditor;
 [CustomEditor(typeof(WFCHandler))]
 public class WFCInspector : Editor
@@ -15,10 +14,6 @@ public class WFCInspector : Editor
             myScript.CreateWFC();
             myScript.CreateTilemap();
         }
-        if (GUILayout.Button("Save tilemap"))
-        {
-            myScript.SaveTilemap();
-        }
-
     }
 }
+#endif
