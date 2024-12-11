@@ -29,7 +29,6 @@ public class WFCHandler : MonoBehaviour
         CreateWFC();
         CreateTilemap();
         SaveTilemap();
-
     }
 
     public void CreateWFC()

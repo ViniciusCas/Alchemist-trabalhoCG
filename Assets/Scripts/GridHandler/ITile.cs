@@ -8,7 +8,6 @@ namespace GridHandler
     {
         string Name { get; set; }
         int MovementCost { get; set; }
-        IPower[] Constrains { get; set; }
         Texture3D Texture { get; set; }
     }
 }

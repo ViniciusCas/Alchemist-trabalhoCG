@@ -40,30 +40,46 @@ namespace GridHandler
         {
             Clear3DTilemap(parent);
 
-            foreach (Vector3Int position in tilemap.cellBounds.allPositionsWithin)
+            float offsetX = 0f; 
+            float offsetZ = 0f;
+
+            BoundsInt bounds = tilemap.cellBounds;
+
+            for (int x = bounds.xMin; x < bounds.xMax; x++)
             {
-                if (!tilemap.HasTile(position)) continue;
-
-                string Tile2DName = ((Tile)tilemap.GetTile(position)).sprite.texture.name;
-
-                GameObject tmpTile = tilePrefabsMap[Tile2DName];
-                Vector3 worldPos = tilemap.CellToWorld(position);
-                if (tmpTile == null)
+                for (int y = bounds.yMin; y < bounds.yMax; y++)
                 {
-                    tmpTile = GameObject.CreatePrimitive(PrimitiveType.Cube);
-                }
 
-                tmpTile.transform.position = worldPos;
-                tmpTile.transform.rotation = Quaternion.identity;
+                    Vector3Int position = new Vector3Int(x, y, 0);
+                    string Tile2DName = ((Tile)tilemap.GetTile(position)).sprite.texture.name;
 
-                if (parent == null)
-                {
-                    Instantiate(tmpTile);
+                    GameObject tmpTile = tilePrefabsMap[Tile2DName];
+                    if (tmpTile == null)
+                    {
+                        tmpTile = GameObject.CreatePrimitive(PrimitiveType.Cube);
+                    }
+
+                    Debug.Log(parent.name);
+
+                    GameObject instantiatedTile = (parent == null)
+                        ? Instantiate(tmpTile)
+                        : Instantiate(tmpTile, parent.transform);
+
+                    Renderer renderer = instantiatedTile.GetComponent<Renderer>();
+                    if (renderer == null) continue;
+
+                    Vector3 tileSize = renderer.bounds.size;
+
+                    instantiatedTile.transform.position = new Vector3(offsetX, 0, offsetZ);
+                    instantiatedTile.transform.rotation = Quaternion.identity;
+
+                    offsetX += tileSize.x;
+
+                    if (y == bounds.yMax - 1) {
+                        offsetZ += tileSize.z;
+                    }
                 }
-                else
-                {
-                    Instantiate(tmpTile, parent.transform);
-                }
+                offsetX = 0f;
             }
             tilemap.gameObject.SetActive(false);
         }
